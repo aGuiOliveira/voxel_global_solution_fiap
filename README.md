@@ -1,4 +1,4 @@
-# gs_back — Otimização Topológica 3D com UI Web
+# Voxel — Otimização Topológica 3D com UI Web
 
 Aplicação web pra otimização topológica 3D via SIMP. O usuário sobe uma STL,
 define apoios/forças/regiões sólidas direto numa visualização 3D, dispara a
