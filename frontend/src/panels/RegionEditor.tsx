@@ -1,6 +1,7 @@
 // Editor inline de uma regiao. Renderiza campos dependendo do .type
 // e (quando aplicavel) botoes "pick" pra preencher coords via click no canvas.
 
+import { useEffect, useState } from 'react'
 import type {
   BoxRegion, FaceName, ForceRegion, Region, SphereRegion, Vec3,
 } from '../api/types'
@@ -81,8 +82,8 @@ export function RegionEditor({ group, stored }: Props) {
             onChange={(v) => update(group, stored.id, { center: v } as never)} />
           <label className="row">
             <span>radius</span>
-            <input type="number" min={0.1} step={0.5} value={(r as SphereRegion).radius}
-              onChange={(e) => update(group, stored.id, { radius: parseFloat(e.target.value) } as never)} />
+            <NumInput min={0.1} step={0.5} value={(r as SphereRegion).radius}
+              onChange={(n) => update(group, stored.id, { radius: n } as never)} />
           </label>
         </>
       )}
@@ -134,14 +135,56 @@ function Vec3Field({
         {(['x', 'y', 'z'] as const).map((axis, i) => (
           <label key={axis}>
             <span>{axis}</span>
-            <input type="number" step={0.5} value={value[i]}
-              onChange={(e) => {
-                const v = parseFloat(e.target.value)
-                if (Number.isFinite(v)) setIdx(i, v)
-              }} />
+            <NumInput step={0.5} value={value[i]} onChange={(n) => setIdx(i, n)} />
           </label>
         ))}
       </div>
     </div>
+  )
+}
+
+// Input numerico controlado por TEXTO local, nao pelo numero puro. Antes, com
+// value={value}, apagar o campo deixava parseFloat=NaN -> o onChange nao
+// disparava -> o React re-renderizava o numero antigo de volta, impedindo
+// limpar o campo. Agora o texto livre fica no estado local; commita so numero
+// valido, e ao desfocar vazio/invalido cai pro 0 (default pedido).
+function NumInput({
+  value, onChange, step, min,
+}: {
+  value: number
+  onChange: (v: number) => void
+  step?: number
+  min?: number
+}) {
+  const [text, setText] = useState(String(value))
+
+  // Ressincroniza quando value muda por fora (ex.: pick no canvas, troca de
+  // tipo), sem sobrescrever enquanto se digita algo equivalente ao valor atual.
+  useEffect(() => {
+    if (Number(text) !== value) setText(String(value))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value])
+
+  return (
+    <input
+      type="number"
+      step={step}
+      min={min}
+      value={text}
+      onChange={(e) => {
+        const t = e.target.value
+        setText(t)
+        if (t !== '') {
+          const n = Number(t)
+          if (Number.isFinite(n)) onChange(n)
+        }
+      }}
+      onBlur={() => {
+        if (text === '' || !Number.isFinite(Number(text))) {
+          setText('0')
+          onChange(0)
+        }
+      }}
+    />
   )
 }

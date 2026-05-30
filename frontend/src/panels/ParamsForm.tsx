@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { useJob } from '../store/job'
 
 // Limites empiricos (Pardiso, ~8 GB RAM):
@@ -112,18 +113,43 @@ function NumField({
   label: string; value: number; onChange: (v: number) => void
   step?: number; min?: number; max?: number; int?: boolean; help?: string
 }) {
+  // Controlado por TEXTO local, nao pelo numero puro. Antes, com value={value},
+  // apagar o campo deixava e.target.value="" -> parseFloat=NaN -> onChange nao
+  // disparava -> o React re-renderizava o numero antigo de volta, impedindo o
+  // usuario de limpar o campo. Agora o texto livre fica no estado local; so
+  // commita numero valido, e ao desfocar vazio/invalido cai pro 0 (default).
+  const [text, setText] = useState(String(value))
+
+  // Ressincroniza quando value muda por fora (ex.: reset do form), sem
+  // sobrescrever enquanto o usuario digita algo equivalente ao valor atual.
+  useEffect(() => {
+    if (Number(text) !== value) setText(String(value))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value])
+
   return (
     <label className="numfield">
       <span>{label}</span>
       <input
         type="number"
-        value={value}
+        value={text}
         step={step ?? 1}
         min={min}
         max={max}
         onChange={(e) => {
-          const v = int ? parseInt(e.target.value, 10) : parseFloat(e.target.value)
-          if (Number.isFinite(v)) onChange(v)
+          const t = e.target.value
+          setText(t)
+          if (t !== '') {
+            const v = int ? parseInt(t, 10) : parseFloat(t)
+            if (Number.isFinite(v)) onChange(v)
+          }
+        }}
+        onBlur={() => {
+          const v = int ? parseInt(text, 10) : parseFloat(text)
+          if (text === '' || !Number.isFinite(v)) {
+            setText('0')
+            onChange(0)
+          }
         }}
       />
       {help && <small>{help}</small>}

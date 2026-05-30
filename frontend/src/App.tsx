@@ -14,7 +14,7 @@ function App() {
       <div className="layout">
         <aside className="side left">
           <header className="brand">
-            <h1>PyTopo3D</h1>
+            <h1>Voxel</h1>
             <p className="meta">topology optimization</p>
           </header>
           <StlUploader />
