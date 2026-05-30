@@ -1,0 +1,85 @@
+# ============================================================
+# Python
+# ============================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+*.egg
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# venv / conda local
+.venv/
+venv/
+env/
+.python-version
+
+# Jupyter
+.ipynb_checkpoints/
+
+# ============================================================
+# Node / frontend
+# ============================================================
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/coverage/
+
+# logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ============================================================
+# Backend outputs (gerados em runtime, não devem versionar)
+# ============================================================
+PyTopo3D/runs/
+PyTopo3D/uploads/
+PyTopo3D/results/
+PyTopo3D/datasets/
+
+# Artefatos do smoke test (test_api.py grava STL baixada localmente)
+PyTopo3D/_smoke_*.stl
+
+# Plots gerados pelo TPMS / debug
+PyTopo3D/stromberg_mapping.png
+PyTopo3D/*.gif
+PyTopo3D/*.mp4
+
+# ============================================================
+# IDE / editor
+# ============================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Claude Code workspace (memórias e config local — não vão pro repo)
+.claude/
+
+# ============================================================
+# OS
+# ============================================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ============================================================
+# Secrets / config local (sem segredos no projeto hoje, mas previne acidentes)
+# ============================================================
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
