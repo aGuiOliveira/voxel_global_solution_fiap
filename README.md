@@ -1,10 +1,12 @@
 # Voxel — Otimização Topológica 3D com UI Web
 
+** Projeto destinado a entrega da Global Solution 2026 da FIAP.
+
 Aplicação web pra otimização topológica 3D via SIMP. O usuário sobe uma STL,
 define apoios/forças/regiões sólidas direto numa visualização 3D, dispara a
 otimização e acompanha o resultado evoluindo ao vivo.
 
-Projeto de TCC. Engine: [PyTopo3D](./PyTopo3D/) (SIMP em Python). Backend:
+Engine: [PyTopo3D](./PyTopo3D/) (SIMP em Python). Backend:
 FastAPI. Frontend: React + Vite + React Three Fiber.
 
 ## Features
